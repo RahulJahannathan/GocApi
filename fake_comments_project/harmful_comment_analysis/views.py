@@ -1,19 +1,23 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from asgiref.sync import sync_to_async
 from .services.harmful_main import main
 from .services.classifier import extract_parts
 from .services.phishingmain import checker
 import asyncio
 
-@api_view(['POST'])
+@api_view(['GET', 'POST'])
 def harmful_comment_view(request):
+    if request.method == 'GET':
+        return Response({"message": "hello world"})
+    
+    # POST method logic
     comment = request.data.get("comment", "")
     comment_classify = extract_parts(comment)
     content = comment_classify['text']
-    urls=comment_classify['link']
+    urls = comment_classify['link']
+    
     if content:
-        res = asyncio.run(main(content))  #  ✅ Make sure to await the coroutine
+        res = asyncio.run(main(content))
         if res["result"]:
             return Response({"allowed": False})
         elif urls:
@@ -23,7 +27,7 @@ def harmful_comment_view(request):
             else:
                 return Response({"allowed": True})
         else:
-                return Response({"allowed": True})
+            return Response({"allowed": True})
     elif urls:
         result = asyncio.run(checker(urls))
         if result:
@@ -31,4 +35,4 @@ def harmful_comment_view(request):
         else:
             return Response({"allowed": True})
 
-    # ✅ Wrap in valid Response
+    return Response({"allowed": True})  # default fallback
