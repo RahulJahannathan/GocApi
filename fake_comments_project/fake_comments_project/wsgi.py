@@ -15,3 +15,4 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'fake_comments_project.settings'
 
 application = get_wsgi_application()
 app = application
+WSGI_APPLICATION = "api.wsgi.app"
