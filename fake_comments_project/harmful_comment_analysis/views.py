@@ -5,7 +5,7 @@ from .services.classifier import extract_parts
 from .services.phishingmain import checker
 import asyncio
 
-@api_view(['GET', 'POST'])
+@api_view(['POST'])
 def harmful_comment_view(request):
     if request.method == 'GET':
         return Response({"message": "hello world"})
@@ -36,3 +36,6 @@ def harmful_comment_view(request):
             return Response({"allowed": True})
 
     return Response({"allowed": True})  # default fallback
+@api_view(['GET'])
+def test_view(request):
+    return Response({"message": "hello world"})
